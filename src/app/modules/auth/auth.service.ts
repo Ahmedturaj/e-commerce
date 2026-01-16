@@ -10,17 +10,49 @@ import sendMailer from '../../helper/sendMailer';
 import bcrypt from 'bcryptjs';
 import createOtpTemplate from '../../utils/createOtpTemplate';
 
+// const registerUser = async (payload: Partial<IUser>) => {
+//   const exist = await User.findOne({ email: payload.email });
+//   if (exist) throw new AppError(409, 'User already exists');
+
+//   const idx = Math.floor(Math.random() * 100);
+//   payload.profileImage = `https://avatar.iran.liara.run/public/${idx}.png`;
+
+//   const user = await User.create(payload);
+
+//   return user;
+// };
+
 const registerUser = async (payload: Partial<IUser>) => {
   const exist = await User.findOne({ email: payload.email });
   if (exist) throw new AppError(409, 'User already exists');
 
+  
   const idx = Math.floor(Math.random() * 100);
   payload.profileImage = `https://avatar.iran.liara.run/public/${idx}.png`;
 
+  
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  payload.otp = otp;
+  payload.otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
+  payload.verified = false;
+
+ 
   const user = await User.create(payload);
 
-  return user;
+  
+  await sendMailer(
+    user.email,
+    'Verify your account',
+    createOtpTemplate(otp, user.email, 'Your Company'),
+  );
+
+  return {
+    message: 'Registration successful. OTP sent to your email',
+    userId: user._id,
+  };
 };
+
 
 const loginUser = async (payload: Partial<IUser>) => {
   const user = await User.findOne({ email: payload.email });

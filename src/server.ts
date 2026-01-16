@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
-
+import dotenv from 'dotenv';
+dotenv.config();
 const PORT = config.port;
 
 const main = async () => {

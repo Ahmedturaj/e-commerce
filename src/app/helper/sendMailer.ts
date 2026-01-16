@@ -10,6 +10,7 @@ const sendMailer = async (
     host: config.email.host,
     port: Number(config.email.port),
     secure: false, // true for 465, false for other ports
+    service: 'gmail',
     auth: {
       user: config.email.address,
       pass: config.email.pass,
