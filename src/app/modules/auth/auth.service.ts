@@ -12,7 +12,7 @@ import createOtpTemplate from '../../utils/createOtpTemplate';
 
 const registerUser = async (payload: Partial<IUser>) => {
   const exist = await User.findOne({ email: payload.email });
-  if (exist) throw new AppError(400, 'User already exists');
+  if (exist) throw new AppError(409, 'User already exists');
 
   const idx = Math.floor(Math.random() * 100);
   payload.profileImage = `https://avatar.iran.liara.run/public/${idx}.png`;
@@ -32,7 +32,6 @@ const loginUser = async (payload: Partial<IUser>) => {
     user.password,
   );
   if (!isPasswordMatched) throw new AppError(401, 'Password not matched');
-  if (!user.verified) throw new AppError(403, 'Please verify your email first');
 
   const accessToken = jwtHelpers.genaretToken(
     { id: user._id, role: user.role, email: user.email },

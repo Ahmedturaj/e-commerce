@@ -3,7 +3,7 @@ import catchAsync from '../../utils/catchAsycn';
 import sendResponse from '../../utils/sendResponse';
 import { authService } from './auth.service';
 
-const registerUser = catchAsync(async (req, res) => {
+export const registerUser = catchAsync(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   const result = await authService.registerUser({
     firstName,
@@ -126,7 +126,6 @@ const changePassword = catchAsync(async (req, res) => {
 });
 
 export const authController = {
-  registerUser,
   verifyEmail,
   loginUser,
   refreshToken,
