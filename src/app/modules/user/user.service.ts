@@ -78,10 +78,10 @@ const updateUserById = async (
   }
   if (file) {
     const uploadProfile = await fileUploader.uploadToCloudinary(file);
-    if (!uploadProfile?.secure_url) {
+    if (!uploadProfile?.url) {
       throw new AppError(400, 'Failed to upload profile image');
     }
-    payload.profileImage = uploadProfile.secure_url;
+    payload.profileImage = uploadProfile.url;
   }
   const result = await User.findByIdAndUpdate(id, payload, { new: true });
   if (!result) {
