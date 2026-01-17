@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { IProduct } from "./product.interface";
 
 const productSchema = new mongoose.Schema<IProduct>({
-    id: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     price: { type: Number, required: true },
