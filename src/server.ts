@@ -12,13 +12,13 @@ const main = async () => {
     }
 
     const mongo = await mongoose.connect(config.mongoUri);
-    console.log(`✅ MongoDB connected: ${mongo.connection.host}`);
+    console.log(`MongoDB connected: ${mongo.connection.host}`);
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (error: any) {
-    console.error('❌ Error starting server:', error.message || error);
+    console.error('Error starting server:', error.message || error);
     process.exit(1);
   }
 };
