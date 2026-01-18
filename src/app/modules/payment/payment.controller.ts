@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { stripe } from '../../config/stripe';
 import Product from '../product/product.model';
 import { Payment } from './payment.model';
+import User from '../user/user.model';
 
 export const createPayment = async (req: Request, res: Response) => {
   const { productId } = req.body;
