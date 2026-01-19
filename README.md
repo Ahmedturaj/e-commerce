@@ -1,5 +1,3 @@
-# Boilerplate Web Node.js TypeScript
-
 A robust and scalable Node.js backend boilerplate built with TypeScript, Express, and MongoDB. This project provides a solid foundation for building web applications with authentication, file uploads, real-time features, and more.
 
 ## 🚀 Features
