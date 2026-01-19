@@ -1,255 +1,126 @@
-A robust and scalable Node.js backend boilerplate built with TypeScript, Express, and MongoDB. This project provides a solid foundation for building web applications with authentication, file uploads, real-time features, and more.
+# Node.js E-commerce/Subscription Backend
 
-## 🚀 Features
+A robust and scalable Node.js backend built with TypeScript, Express, and MongoDB. This project supports user authentication, product management, order creation, Stripe payment integration, and real-time updates. The backend is deployed on Vercel and ready to serve as a foundation for web applications.
 
-- **TypeScript** - Full TypeScript support for type safety
-- **Express.js** - Fast and minimalist web framework
-- **MongoDB with Mongoose** - Database integration with ODM
-- **JWT Authentication** - Secure token-based authentication
-- **Socket.IO** - Real-time bidirectional communication
-- **File Upload** - Cloudinary integration for file storage
-- **Email Service** - Nodemailer for email notifications
-- **Validation** - Zod for request validation
-- **Error Handling** - Comprehensive error handling system
-- **Environment Configuration** - Secure environment variable management
-- **CORS** - Cross-origin resource sharing enabled
-- **Cookie Parser** - HTTP cookie management
-- **BCrypt** - Password hashing and security
-- **ESLint & Prettier** - Code linting and formatting
+## Features
 
-## 📦 Prerequisites
+- **User Management**
+  - User registration & login (JWT authentication)
+  - Get logged-in user profile
 
-- Node.js (v16 or higher)
-- MongoDB (local or cloud instance)
-- npm or yarn
+- **Product / Plan Management**
+  - Create and list products or subscription plans
 
-## 🛠️ Installation
+- **Order & Payment**
+  - Create orders
+  - Initiate Stripe payment (test mode)
+  - Handle payment success via Stripe webhooks
+  - Update order status after payment
+
+- **Security & Utilities**
+  - JWT-based authentication
+  - Environment variable management for secrets
+  - Proper CORS and error handling setup
+
+## Tech Stack
+
+- Node.js + TypeScript
+- Express.js
+- MongoDB (Mongoose)
+- Stripe (Payment Gateway)
+- Vercel (Deployment)
+
+## Project Setup
 
 1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd boilerplate-web-nodejs-typescript
-   ```
+   cd <your-project-folder>
 
 2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+`npm install`
 
-3. **Environment Setup**
-   - Copy `.env.example` to `.env`
-   - Configure all required environment variables:
+3. **Environment Variables**
 
-   ```env
-   # Server
-   NODE_ENV=development
-   PORT=5000
+Create a .env file in the root directory with the following keys:
 
-   # Database
-   MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?retryWrites=true&w=majority
+`NODE_ENV=development`
+`PORT=5000`
 
-   # JWT
-   JWT_SECRET=your_jwt_secret
-   JWT_EXPIRE=1h
-   ACCESS_TOKEN_SECRET=your_access_token_secret
-   ACCESS_TOKEN_EXPIRES=7d
-   REFRESH_TOKEN_SECRET=your_refresh_token_secret
-   REFRESH_TOKEN_EXPIRES=90d
+`MONGO_URI=<your-mongodb-uri>`
 
-   # Bcrypt
-   BCRYPT_SALT_ROUNDS=10
+`ACCESS_TOKEN_SECRET=<your-access-token-secret>`
+`ACCESS_TOKEN_EXPIRES=7d`
+`REFRESH_TOKEN_SECRET=<your-refresh-token-secret>`
+`REFRESH_TOKEN_EXPIRES=90d`
 
-   # Cloudinary (for file uploads)
-   CLOUDINARY_CLOUD_NAME=your_cloud_name
-   CLOUDINARY_API_KEY=your_cloudinary_api_key
-   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+`STRIPE_SECRET_KEY=<your-stripe-secret-key>`
+`STRIPE_WEBHOOK_SECRET=<your-stripe-webhook-secret>`
 
-   # Email (Nodemailer)
-   EMAIL_EXPIRES=900000
-   EMAIL_HOST=smtp.gmail.com
-   EMAIL_PORT=587
-   EMAIL_ADDRESS=your_email@gmail.com
-   EMAIL_PASS=your_app_password
-   EMAIL_FROM=your_email@gmail.com
-   EMAIL_TO=""
-   ADMIN_EMAIL=admin@example.com
+4. **Start the development server**
 
-   # Frontend
-   FRONTEND_URL=http://localhost:3000
-   ```
+`npm run dev`
 
-## 🚀 Running the Application
 
-### Development Mode
-```bash
-npm run dev
-```
-Runs the server with hot-reload using `ts-node-dev`.
+The server will run on http://localhost:5000 by default.
 
-### Production Build
-```bash
-npm run build
-npm start:prod
-```
-Compiles TypeScript to JavaScript and runs the production server.
+Stripe Payment Flow
 
-### Other Scripts
-```bash
-npm run lint          # Run ESLint
-npm run lint:fix      # Fix linting issues
-npm run prettier      # Format code with Prettier
-npm run prettier:fix  # Fix formatting issues
-```
+Create Order
 
-## 📁 Project Structure
+The client sends a request to create an order with selected products or subscription plan.
 
-```
-src/
-├── app/
-│   ├── config/          # Environment configuration
-│   ├── error/           # Error handling utilities
-│   ├── middlewares/     # Custom middleware
-│   └── routes/          # Route definitions
-├── modules/
-│   ├── auth/            # Authentication module
-│   └── user/            # User management module
-├── helper/              # Utility functions
-├── utils/               # Additional utilities
-├── server.ts           # Server entry point
-└── app.ts              # Express app configuration
-```
+Create Payment Intent
 
-## 🔌 API Endpoints
+Backend calls Stripe API to create a payment intent with the order amount.
 
-### Authentication Routes (`/api/v1/auth`)
-- `POST /register` - User registration with email verification
-- `POST /verify-email` - Verify email with OTP
-- `POST /login` - User login
-- `POST /refresh-token` - Refresh access token
-- `POST /forgot-password` - Request password reset OTP
-- `POST /reset-password` - Reset password with OTP
-- `POST /logout` - User logout
+Returns client_secret to the frontend for Stripe Checkout or payment confirmation.
 
-### User Routes (`/api/v1/user`)
-- `POST /create-user` - Create new user (admin only)
-- `GET /get-all-user` - Get all users
-- `GET /get-user/:id` - Get user by ID
-- `PUT /update-user/:id` - Update user information
-- `DELETE /delete-user/:id` - Delete user (admin only)
+Payment Confirmation
 
-## 🛡️ Authentication Flow
+User completes payment via Stripe frontend (test card: 4242 4242 4242 4242).
 
-1. **Registration**: User registers → receives OTP via email → verifies email
-2. **Login**: User logs in → receives access and refresh tokens
-3. **Protected Routes**: JWT token required in Authorization header
-4. **Token Refresh**: Use refresh token to get new access token
-5. **Password Reset**: Request OTP → verify OTP → set new password
+Stripe sends a webhook event to the backend (/api/webhook endpoint).
 
-## 📧 Email Templates
+Update Order Status
 
-The project includes email templates for:
-- OTP verification (registration and password reset)
-- User creation confirmation
-- Welcome emails
+Backend verifies the webhook signature.
 
-## 🔄 Real-time Features
+Updates the order status to paid or failed in the database.
 
-Socket.IO is integrated for real-time functionality:
-- Chat messaging
-- Real-time notifications
-- Live updates
+API Endpoints
 
-## 🗃️ Database Models
+Auth
 
-### User Model
-```typescript
-{
-  name: string;
-  email: string;
-  password: string;
-  role: 'admin' | 'user';
-  profileImage?: string;
-  otp?: string;
-  otpExpiry?: Date;
-  verified?: boolean;
-}
-```
+POST /api/auth/register – Register a new user
 
-## 🚨 Error Handling
+POST /api/auth/login – Login user
 
-The application includes comprehensive error handling for:
-- Validation errors (Zod)
-- Database errors (Mongoose)
-- Authentication errors
-- Custom application errors
+GET /api/auth/me – Get logged-in user profile
 
-## 🔧 Configuration
+Products
 
-### Environment Variables
-All sensitive configuration is managed through environment variables. See the `.env.example` file for all required variables.
+POST /api/products – Create a product
 
-### Cloudinary Setup
-For file uploads, configure your Cloudinary credentials in the environment variables.
+GET /api/products – List all products
 
-### Email Service
-Configure your email service provider (Gmail recommended for development) in the environment variables.
+Orders
 
-## 🧪 Testing
+POST /api/orders – Create order and initiate payment
 
-To add tests to the project:
+POST /api/webhook – Stripe webhook to handle payment status
 
-1. Install testing dependencies:
-   ```bash
-   npm install --save-dev jest @types/jest ts-jest supertest @types/supertest
-   ```
+Note: Use JWT token in Authorization header for protected routes.
 
-2. Create a `jest.config.js` file
-3. Add test scripts to package.json
+Postman Collection
 
-## 📦 Deployment
+A Postman collection with all endpoints, JWT setup, and sample request/response is included in the repository:
+/docs/PostmanCollection.json
 
-### Build for Production
-```bash
-npm run build
-```
+Deployment
 
-### Start Production Server
-```bash
-npm start:prod
-```
+Live API Base URL: <your-vercel-deployed-url>
 
-### Docker (Optional)
-Consider adding Docker configuration for containerized deployment.
+Stripe Webhook Endpoint: <your-vercel-deployed-url>/api/webhook
 
-## 🤝 Contributing
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the ISC License.
-
-## 🆘 Support
-
-If you encounter any issues or have questions:
-
-1. Check the console for error messages
-2. Verify all environment variables are set correctly
-3. Ensure MongoDB is running and accessible
-4. Check that all required ports are available
-
-## 🔗 Useful Links
-
-- [Express.js Documentation](https://expressjs.com/)
-- [Mongoose Documentation](https://mongoosejs.com/)
-- [TypeScript Documentation](https://www.typescriptlang.org/)
-- [Socket.IO Documentation](https://socket.io/)
-- [Cloudinary Documentation](https://cloudinary.com/)
-
----
-
-**Happy Coding!** 🎉
+CORS is configured to allow frontend requests, and proper error handling middleware ensures clean API responses.
