@@ -15,7 +15,7 @@ const main = async () => {
     console.log(`MongoDB connected: ${mongo.connection.host}`);
 
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server running .`);
     });
   } catch (error: any) {
     console.error('Error starting server:', error.message || error);
