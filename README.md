@@ -1,4 +1,4 @@
-# Node.js E-commerce/Subscription Backend
+# Node.js E-commerce
 
 A robust and scalable Node.js backend built with TypeScript, Express, and MongoDB. This project supports user authentication, product management, order creation, Stripe payment integration, and real-time updates. The backend is deployed on Vercel and ready to serve as a foundation for web applications.
 
